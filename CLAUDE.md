@@ -5,9 +5,9 @@
 > Living section maintained during development — read this first when resuming a session. Keep it updated after every increment; assume any session can end abruptly.
 
 - **Phase:** 1 — Foundation (in progress)
-- **Done:** Brief committed as CLAUDE.md (project renamed to Katachi). pnpm workspace scaffolded (root package.json, pnpm-workspace.yaml, tsconfig.base.json, vitest, .gitignore, `apps/web/.env.example`).
+- **Done:** Brief committed; pnpm workspace scaffolded; **@katachi/schema complete** (all §6 types + Zod validators + `defaultX()` factories, 14 unit tests passing, typecheck clean).
 - **In progress:** —
-- **Next step:** Build `packages/schema` (@katachi/schema): all §6 types + Zod schemas + `defaultX()` factories + tests.
+- **Next step:** `packages/renderer` — `cascade.ts` (resolveTokens → CSS-var map, styleToCss, token-ref resolution) with unit tests.
 - **Waiting on owner:** Supabase env vars (`apps/web/.env.local`, see §16). Everything must build/test without them; live-DB + auth verification is deferred until they arrive. Never commit secrets.
 
 ---
@@ -196,6 +196,7 @@ export type Section = {
   type: string                      // see Section Library — 'custom' uses raw blocks
   variant: string                   // layout variant within the type
   label?: string                    // shown in Studio tree
+  props: Record<string, unknown>    // per-type content, validated by that section's Zod schema (§8)
   themeOverride?: DeepPartial<ThemeTokens>      // section-level themes
   background?: BackgroundLayer[]    // stacked bottom → top
   visibility?: Condition
@@ -480,3 +481,6 @@ Free-stack checklist (owner does once): create Supabase project (DB + Auth + Sto
 - 2026-06-10 — Stack locked per §3; brief authored. — Project start.
 - 2026-06-10 — Project renamed **Katachi**; workspace packages are `@katachi/schema` and `@katachi/renderer`; monorepo root dir reflects repo name. — Owner request at kickoff.
 - 2026-06-10 — Supabase env vars not yet available. All Phase 1 code, Prisma migrations, and tests must work without a live database (`.env.example` committed, migrations generated offline via `prisma migrate diff`, env-guarded clients, `/setup` page when unconfigured). Live verification of auth/persist/publish deferred until `.env.local` arrives. — Owner constraint at kickoff.
+- 2026-06-10 — Added `props: Record<string, unknown>` to `Section` (§6). — §8 already mandates a per-section Zod props schema + default factory; §6 omitted the field. Sections need first-class content (hero name/tagline) in Phase 1, before the Phase 2 `richText` block exists. Mirrors `Block.props`.
+- 2026-06-10 — `NavConfig` defined as `{ layout: 'top'|'side'|'hidden'; logoText?; logoAssetId?; links: { id, label, pageId?, href? }[] }`. — Referenced in §6 but never specified.
+- 2026-06-10 — `@katachi/schema` re-exports `z` from zod. — Lets renderer section folders define their props schemas (§8) while importing only react + the schema package, keeping the §2.1 purity rule literal and lintable.
