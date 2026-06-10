@@ -5,9 +5,9 @@
 > Living section maintained during development — read this first when resuming a session. Keep it updated after every increment; assume any session can end abruptly.
 
 - **Phase:** 1 — Foundation (in progress)
-- **Done:** Brief committed; pnpm workspace; **@katachi/schema** (14 tests); **renderer cascade.ts** (resolveTokens global→page→section → CSS-var map, tokenToVar → `var(--…)`, styleToCss; 17 tests) + ESLint purity rule enforcing §2.1.
+- **Done:** Brief; workspace; **@katachi/schema** (14 tests); **@katachi/renderer complete for Phase 1** — cascade (17 tests), six sections at one variant each (hero/about/projectsGrid/experienceTimeline/skills/contact) each with props schema + defaults + inspector field manifest, background layers (color/gradient/aurora/sweep/noise) + the five §10 Phase-1 presets, registry, RenderSection/RenderPage, styles.css, purity lint green.
 - **In progress:** —
-- **Next step:** Renderer sections (hero, about, projectsGrid, experienceTimeline, skills, contact — one variant each), background layers (color/gradient/aurora/sweep/noise) + presets, registry, RenderSection/RenderPage, styles.css.
+- **Next step:** `apps/web` Next.js shell (TS strict + Tailwind + transpilePackages) with landing page; verify `pnpm build`.
 - **Waiting on owner:** Supabase env vars (`apps/web/.env.local`, see §16). Everything must build/test without them; live-DB + auth verification is deferred until they arrive. Never commit secrets.
 
 ---
@@ -484,3 +484,7 @@ Free-stack checklist (owner does once): create Supabase project (DB + Auth + Sto
 - 2026-06-10 — Added `props: Record<string, unknown>` to `Section` (§6). — §8 already mandates a per-section Zod props schema + default factory; §6 omitted the field. Sections need first-class content (hero name/tagline) in Phase 1, before the Phase 2 `richText` block exists. Mirrors `Block.props`.
 - 2026-06-10 — `NavConfig` defined as `{ layout: 'top'|'side'|'hidden'; logoText?; logoAssetId?; links: { id, label, pageId?, href? }[] }`. — Referenced in §6 but never specified.
 - 2026-06-10 — `@katachi/schema` re-exports `z` from zod. — Lets renderer section folders define their props schemas (§8) while importing only react + the schema package, keeping the §2.1 purity rule literal and lintable.
+- 2026-06-10 — Section registry is a static map for now; per-type lazy loading (§8) starts when the first client-interactive section lands. — Phase 1 sections are zero-JS server components, so laziness would save visitors nothing today; the registry shape already isolates the change.
+- 2026-06-10 — Gradient Sweep animates an oversized strip via `transform`, not `background-position` as §10's table says. — The §10 hard rule (animate only transform/opacity) wins over the table's implementation note; visual result identical.
+- 2026-06-10 — Aurora/sweep are `kind`s of the `gradient` layer type; Grain is the `noise` type. — §6's BackgroundLayer type union is closed; presets are recipes over those primitives (§10 "implementation tech is internal").
+- 2026-06-10 — Animated background stacks mount a ~0.5 KB client island (IntersectionObserver + visibilitychange) to satisfy §10's pause-offscreen rule; static stacks ship zero JS. — Cheapest way to honor the hard rule without a global script.

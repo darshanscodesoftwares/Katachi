@@ -1,1 +1,7 @@
 export * from './cascade'
+export * from './registry'
+export { sectionRegistry, sectionDefinitions } from './sections/registry'
+export { backgroundPresets } from './backgrounds/presets'
+export { BackgroundStack } from './backgrounds/BackgroundStack'
+export { RenderSection, type RenderSectionProps } from './RenderSection'
+export { RenderPage, type RenderPageProps } from './RenderPage'
