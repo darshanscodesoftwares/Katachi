@@ -1,0 +1,72 @@
+// Katachi database model (CLAUDE.md §5).
+// Postgres on Supabase; DATABASE_URL = pooled, DIRECT_URL = direct (migrations).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Profile {
+  // mirrors Supabase auth.users; id = auth user id
+  id         String      @id
+  email      String      @unique
+  name       String?
+  portfolios Portfolio[]
+  assets     Asset[]
+  createdAt  DateTime    @default(now())
+}
+
+model Portfolio {
+  id                 String             @id @default(cuid())
+  userId             String
+  user               Profile            @relation(fields: [userId], references: [id])
+  name               String
+  slug               String             @unique // public URL: /p/[slug]
+  draftVersionId     String?            @unique // pointer
+  publishedVersionId String?            @unique // pointer — publish = copy draft → new version → move pointer
+  versions           PortfolioVersion[]
+  submissions        ContactSubmission[]
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+}
+
+model PortfolioVersion {
+  id          String    @id @default(cuid())
+  portfolioId String
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id])
+  config      Json // the entire PortfolioConfig tree (validated by Zod before write)
+  label       String? // "Published 2026-06-10", "Before redesign"
+  createdAt   DateTime  @default(now())
+}
+
+model Asset {
+  id          String   @id @default(cuid())
+  userId      String
+  user        Profile  @relation(fields: [userId], references: [id])
+  portfolioId String?
+  kind        String // image | video | audio | document | font | svg
+  url         String
+  mime        String
+  sizeBytes   Int
+  width       Int?
+  height      Int?
+  alt         String?
+  focalX      Float? // focal point for smart cropping
+  focalY      Float?
+  createdAt   DateTime @default(now())
+}
+
+model ContactSubmission {
+  // §8: the contact section's form posts to an API route and stores here.
+  id          String    @id @default(cuid())
+  portfolioId String
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id])
+  name        String
+  email       String
+  message     String
+  createdAt   DateTime  @default(now())
+}

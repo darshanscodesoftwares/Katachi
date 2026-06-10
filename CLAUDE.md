@@ -5,9 +5,9 @@
 > Living section maintained during development — read this first when resuming a session. Keep it updated after every increment; assume any session can end abruptly.
 
 - **Phase:** 1 — Foundation (in progress)
-- **Done:** Brief; workspace; **@katachi/schema** (14 tests); **@katachi/renderer complete for Phase 1** — cascade (17 tests), six sections at one variant each (hero/about/projectsGrid/experienceTimeline/skills/contact) each with props schema + defaults + inspector field manifest, background layers (color/gradient/aurora/sweep/noise) + the five §10 Phase-1 presets, registry, RenderSection/RenderPage, styles.css, purity lint green.
+- **Done:** Brief; workspace; **@katachi/schema** (14 tests); **@katachi/renderer** (cascade 17 tests, six sections, backgrounds + presets, purity lint); **apps/web shell** (Next 16, Tailwind v4, build green); **Prisma layer** — §5 schema + ContactSubmission, offline-authored `20260610000000_init` migration, prisma.config.ts (loads .env.local), lazy env-guarded client (`lib/prisma.ts`), `pnpm db:deploy`/`db:status` ready for when env arrives.
 - **In progress:** —
-- **Next step:** `apps/web` Next.js shell (TS strict + Tailwind + transpilePackages) with landing page; verify `pnpm build`.
+- **Next step:** Supabase auth — `lib/supabase/*`, middleware gating `/studio`, `/login` magic-link page, `/auth/callback`, `/setup` page for missing env, `ensureProfile`.
 - **Waiting on owner:** Supabase env vars (`apps/web/.env.local`, see §16). Everything must build/test without them; live-DB + auth verification is deferred until they arrive. Never commit secrets.
 
 ---
@@ -488,3 +488,6 @@ Free-stack checklist (owner does once): create Supabase project (DB + Auth + Sto
 - 2026-06-10 — Gradient Sweep animates an oversized strip via `transform`, not `background-position` as §10's table says. — The §10 hard rule (animate only transform/opacity) wins over the table's implementation note; visual result identical.
 - 2026-06-10 — Aurora/sweep are `kind`s of the `gradient` layer type; Grain is the `noise` type. — §6's BackgroundLayer type union is closed; presets are recipes over those primitives (§10 "implementation tech is internal").
 - 2026-06-10 — Animated background stacks mount a ~0.5 KB client island (IntersectionObserver + visibilitychange) to satisfy §10's pause-offscreen rule; static stacks ship zero JS. — Cheapest way to honor the hard rule without a global script.
+- 2026-06-10 — Added `ContactSubmission` model (+ relation on Portfolio) beyond §5. — §8 specifies the contact section "stores submissions in DB"; §5 simply lacked the table.
+- 2026-06-10 — Prisma 7 reality (§15.9): connection URLs no longer live in schema.prisma; they moved to `prisma.config.ts` (which loads `.env.local` itself — no dotenv-cli needed) and the runtime client uses the `@prisma/adapter-pg` driver adapter. `dotenv` added as a dev dep for the config file only.
+- 2026-06-10 — Initial migration SQL hand-authored following Prisma's exact DDL conventions. — `prisma migrate diff` (7.8.0) exits 0 with no output in this environment even unsandboxed. Verify after env arrives: `pnpm db:deploy` then `pnpm db:status`.
