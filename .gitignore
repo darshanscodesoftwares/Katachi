@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+next-env.d.ts
+
+# builds
+dist/
+coverage/
+
+# env — secrets never get committed; .env.example is the template
+.env
+.env.*
+!.env.example
+
+# prisma generated client (generated into node_modules by default; keep rule for safety)
+apps/web/generated/
+
+# misc
+.DS_Store
+*.log
+.vercel
+.turbo

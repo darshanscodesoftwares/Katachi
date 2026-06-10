@@ -5,9 +5,9 @@
 > Living section maintained during development — read this first when resuming a session. Keep it updated after every increment; assume any session can end abruptly.
 
 - **Phase:** 1 — Foundation (in progress)
-- **Done:** Brief committed as CLAUDE.md (project renamed to Katachi).
+- **Done:** Brief committed as CLAUDE.md (project renamed to Katachi). pnpm workspace scaffolded (root package.json, pnpm-workspace.yaml, tsconfig.base.json, vitest, .gitignore, `apps/web/.env.example`).
 - **In progress:** —
-- **Next step:** Scaffold the pnpm workspace: root `package.json`, `pnpm-workspace.yaml`, `tsconfig.base.json`, `.gitignore`, root `vitest.config.ts`, `apps/web/.env.example`.
+- **Next step:** Build `packages/schema` (@katachi/schema): all §6 types + Zod schemas + `defaultX()` factories + tests.
 - **Waiting on owner:** Supabase env vars (`apps/web/.env.local`, see §16). Everything must build/test without them; live-DB + auth verification is deferred until they arrive. Never commit secrets.
 
 ---
