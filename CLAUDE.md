@@ -5,9 +5,9 @@
 > Living section maintained during development — read this first when resuming a session. Keep it updated after every increment; assume any session can end abruptly.
 
 - **Phase:** 1 — Foundation (in progress)
-- **Done:** Brief committed; pnpm workspace scaffolded; **@katachi/schema complete** (all §6 types + Zod validators + `defaultX()` factories, 14 unit tests passing, typecheck clean).
+- **Done:** Brief committed; pnpm workspace; **@katachi/schema** (14 tests); **renderer cascade.ts** (resolveTokens global→page→section → CSS-var map, tokenToVar → `var(--…)`, styleToCss; 17 tests) + ESLint purity rule enforcing §2.1.
 - **In progress:** —
-- **Next step:** `packages/renderer` — `cascade.ts` (resolveTokens → CSS-var map, styleToCss, token-ref resolution) with unit tests.
+- **Next step:** Renderer sections (hero, about, projectsGrid, experienceTimeline, skills, contact — one variant each), background layers (color/gradient/aurora/sweep/noise) + presets, registry, RenderSection/RenderPage, styles.css.
 - **Waiting on owner:** Supabase env vars (`apps/web/.env.local`, see §16). Everything must build/test without them; live-DB + auth verification is deferred until they arrive. Never commit secrets.
 
 ---
