@@ -11,7 +11,7 @@ const SAVE_LABEL = {
   error: { text: 'Save failed — retrying on next change', dot: 'bg-red-500' },
 } as const
 
-export function TopBar({ name, slug }: { name: string; slug: string }) {
+export function TopBar({ name, slug, demo }: { name: string; slug: string; demo?: boolean }) {
   const portfolioId = useStudio((s) => s.portfolioId)
   const saveState = useStudio((s) => s.saveState)
   const [publishState, setPublishState] = useState<'idle' | 'publishing' | 'published' | 'error'>('idle')
@@ -38,14 +38,22 @@ export function TopBar({ name, slug }: { name: string; slug: string }) {
         Katachi
       </Link>
       <span className="truncate text-sm text-zinc-500">{name}</span>
+      {demo ? (
+        <span
+          title="No Supabase configured — edits persist in this browser only. See /setup to go live."
+          className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-800"
+        >
+          Demo mode
+        </span>
+      ) : null}
 
       <span className="ml-auto flex items-center gap-1.5 text-xs text-zinc-500">
         <span className={`h-2 w-2 rounded-full ${save.dot}`} />
-        {save.text}
+        {demo && saveState === 'saved' ? 'Saved locally' : save.text}
       </span>
 
       <a
-        href={`/p/${slug}`}
+        href={demo ? '/demo' : `/p/${slug}`}
         target="_blank"
         rel="noreferrer"
         className="text-sm font-medium text-zinc-600 hover:text-zinc-900"
@@ -53,26 +61,38 @@ export function TopBar({ name, slug }: { name: string; slug: string }) {
         View public ↗
       </a>
 
-      <button
-        type="button"
-        onClick={publish}
-        disabled={publishState === 'publishing'}
-        className="rounded-lg bg-indigo-600 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:opacity-50"
-      >
-        {publishState === 'publishing'
-          ? 'Publishing…'
-          : publishState === 'published'
-            ? 'Published ✓'
-            : publishState === 'error'
-              ? 'Publish failed — retry'
-              : 'Publish'}
-      </button>
-
-      <form action="/auth/signout" method="post">
-        <button type="submit" className="text-xs text-zinc-400 hover:text-zinc-700">
-          Sign out
+      {demo ? (
+        <Link
+          href="/setup"
+          title="Publishing needs Supabase — one-time setup"
+          className="cursor-not-allowed rounded-lg bg-zinc-300 px-4 py-1.5 text-sm font-semibold text-white"
+        >
+          Publish (needs setup)
+        </Link>
+      ) : (
+        <button
+          type="button"
+          onClick={publish}
+          disabled={publishState === 'publishing'}
+          className="rounded-lg bg-indigo-600 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-indigo-500 disabled:opacity-50"
+        >
+          {publishState === 'publishing'
+            ? 'Publishing…'
+            : publishState === 'published'
+              ? 'Published ✓'
+              : publishState === 'error'
+                ? 'Publish failed — retry'
+                : 'Publish'}
         </button>
-      </form>
+      )}
+
+      {demo ? null : (
+        <form action="/auth/signout" method="post">
+          <button type="submit" className="text-xs text-zinc-400 hover:text-zinc-700">
+            Sign out
+          </button>
+        </form>
+      )}
     </header>
   )
 }

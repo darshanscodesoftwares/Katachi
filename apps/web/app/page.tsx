@@ -15,6 +15,12 @@ export default function Home() {
         >
           Open the Studio
         </Link>
+        <Link
+          href="/demo"
+          className="rounded-lg border border-zinc-300 px-5 py-2.5 font-semibold text-zinc-700 transition hover:border-zinc-400"
+        >
+          View demo portfolio
+        </Link>
       </div>
     </div>
   )

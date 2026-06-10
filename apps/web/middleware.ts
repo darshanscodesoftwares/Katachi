@@ -9,12 +9,10 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
   const isProtected = path.startsWith('/studio')
 
-  // Env vars not pasted yet (CLAUDE.md Current Status): degrade to /setup
-  // instead of crashing — never block on missing configuration.
+  // Env vars not pasted yet (CLAUDE.md Current Status): let routes through —
+  // /studio runs in local demo mode (no auth, no DB), /login shows the notice.
   if (!SUPABASE_CONFIGURED) {
-    return isProtected
-      ? NextResponse.redirect(new URL('/setup', request.url))
-      : NextResponse.next()
+    return NextResponse.next()
   }
 
   const { user, response } = await updateSession(request)
