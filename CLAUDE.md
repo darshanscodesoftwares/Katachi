@@ -4,11 +4,15 @@
 
 > Living section maintained during development — read this first when resuming a session. Keep it updated after every increment; assume any session can end abruptly.
 
-- **Phase:** 1 — Foundation (in progress)
-- **Done:** Brief; workspace; **@katachi/schema** (14 tests); **@katachi/renderer** (cascade 17 tests, six sections, backgrounds + presets, purity lint); **apps/web shell** (Next 16, Tailwind v4, build green); **Prisma layer** — §5 schema + ContactSubmission, offline-authored `20260610000000_init` migration, prisma.config.ts (loads .env.local), lazy env-guarded client (`lib/prisma.ts`), `pnpm db:deploy`/`db:status` ready for when env arrives.
+- **Phase:** 1 — Foundation: **code complete**; offline verification green; live verification blocked on env vars.
+- **Done:** Everything in Phase 1 scope is implemented and pushed:
+  - `@katachi/schema` — all §6 types + Zod + defaults (14 tests).
+  - `@katachi/renderer` — cascade resolver (17 tests), six sections at one variant each, background primitives + the five §10 Phase 1 presets, registry, RenderSection/RenderPage, styles.css, ESLint purity rule.
+  - `apps/web` — Next 16 + Tailwind v4 + TS strict; Prisma 7 (§5 models + ContactSubmission, offline-authored init migration, env-guarded lazy client); Supabase magic-link auth with middleware gating `/studio`; config CRUD API with Zod at every boundary; publish pointer flow (6 unit tests); Studio editor (three panes, section tree with up/down, registry-driven Content inspector + Typography/Fill/Layout, theme editor with palette/Google Fonts/type scale/spacing, 1.5 s debounced autosave, Publish button); public `/p/[slug]/[[...page]]` RSC with on-demand ISR and per-page metadata.
+  - Offline checks all green: `pnpm test` 37/37, `pnpm -r typecheck`, `pnpm lint` (incl. renderer purity), `pnpm build`. Env-less smoke test on `next start`: `/` 200, `/studio` → `/setup`, `/login` shows config notice, `/p/unknown` 404, APIs return 503 `not_configured` — nothing crashes without a database.
 - **In progress:** —
-- **Next step:** Public route `/p/[slug]/[[...page]]` — RSC reading ONLY the published version, ISR with on-demand revalidation, per-page metadata, Google Fonts link from config. Studio is done: three panes (pages/section tree with up-down + theme editor | canvas through the real renderer with selection outlines | inspector with Content/Typography/Fill/Layout incl. §10 background presets), Zustand store, 1.5 s debounced autosave with in-flight race handling, Publish button, sign-out.
-- **Waiting on owner:** Supabase env vars (`apps/web/.env.local`, see §16). Everything must build/test without them; live-DB + auth verification is deferred until they arrive. Never commit secrets.
+- **Next step (owner, ~10 min):** create the Supabase project, copy `apps/web/.env.example` → `apps/web/.env.local` and fill values (§16), run `pnpm --filter web db:deploy` then `db:status`, start `pnpm dev`, then walk the Phase 1 "Done when" list (§14) end-to-end: sign in → edit hero text live → change primary color (instant re-theme) → reload (draft persisted) → Publish → `/p/[slug]` shows the published version → draft edits don't change the public page until the next publish.
+- **Verified vs Phase 1 "Done when":** cascade resolver unit tests ✅ (passing). The six sign-in/edit/persist/publish items are implemented but ❌ not yet executed against a live database — they are the first thing to verify when env vars arrive (see step above). Do not start Phase 2 before that walkthrough passes.
 
 ---
 
@@ -491,3 +495,6 @@ Free-stack checklist (owner does once): create Supabase project (DB + Auth + Sto
 - 2026-06-10 — Added `ContactSubmission` model (+ relation on Portfolio) beyond §5. — §8 specifies the contact section "stores submissions in DB"; §5 simply lacked the table.
 - 2026-06-10 — Prisma 7 reality (§15.9): connection URLs no longer live in schema.prisma; they moved to `prisma.config.ts` (which loads `.env.local` itself — no dotenv-cli needed) and the runtime client uses the `@prisma/adapter-pg` driver adapter. `dotenv` added as a dev dep for the config file only.
 - 2026-06-10 — Initial migration SQL hand-authored following Prisma's exact DDL conventions. — `prisma migrate diff` (7.8.0) exits 0 with no output in this environment even unsandboxed. Verify after env arrives: `pnpm db:deploy` then `pnpm db:status`.
+- 2026-06-10 — Contact form is a zero-JS native POST → 303 redirect with `?sent=1`; the public shell (not the renderer) injects a ~200-byte inline script that shows a confirmation toast. — Keeps renderer purity and the visitor JS budget; reading searchParams in the RSC would have broken ISR caching.
+- 2026-06-10 — Public route caching: `revalidate = false` + `dynamicParams` (no `generateStaticParams`, so `next build` needs no database); pages render on first request, cache indefinitely, and Publish busts them via `revalidatePath`. — §12 on-demand ISR with the no-env build constraint.
+- 2026-06-10 — Studio store mutations clone the config tree per edit (`structuredClone` + mutate). — Config documents are small; immutable snapshots keep React updates correct and are exactly the shape zundo will snapshot in Phase 2.
