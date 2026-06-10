@@ -7,7 +7,7 @@
 - **Phase:** 1 — Foundation (in progress)
 - **Done:** Brief; workspace; **@katachi/schema** (14 tests); **@katachi/renderer** (cascade 17 tests, six sections, backgrounds + presets, purity lint); **apps/web shell** (Next 16, Tailwind v4, build green); **Prisma layer** — §5 schema + ContactSubmission, offline-authored `20260610000000_init` migration, prisma.config.ts (loads .env.local), lazy env-guarded client (`lib/prisma.ts`), `pnpm db:deploy`/`db:status` ready for when env arrives.
 - **In progress:** —
-- **Next step:** The Studio editor — Zustand store, three panes (left: pages/sections/theme tabs; center: canvas via the real renderer with selection outlines; right: inspector Content/Typography/Fill/Layout), 1.5 s debounced autosave to the draft PATCH route, top bar with save indicator + Publish. API layer done: portfolios CRUD, draft GET/PATCH (Zod-validated), publish route (pointer move + revalidatePath), contact submissions; publish logic has 6 unit tests via an injected store.
+- **Next step:** Public route `/p/[slug]/[[...page]]` — RSC reading ONLY the published version, ISR with on-demand revalidation, per-page metadata, Google Fonts link from config. Studio is done: three panes (pages/section tree with up-down + theme editor | canvas through the real renderer with selection outlines | inspector with Content/Typography/Fill/Layout incl. §10 background presets), Zustand store, 1.5 s debounced autosave with in-flight race handling, Publish button, sign-out.
 - **Waiting on owner:** Supabase env vars (`apps/web/.env.local`, see §16). Everything must build/test without them; live-DB + auth verification is deferred until they arrive. Never commit secrets.
 
 ---
