@@ -7,7 +7,7 @@
 - **Phase:** 1 — Foundation (in progress)
 - **Done:** Brief; workspace; **@katachi/schema** (14 tests); **@katachi/renderer** (cascade 17 tests, six sections, backgrounds + presets, purity lint); **apps/web shell** (Next 16, Tailwind v4, build green); **Prisma layer** — §5 schema + ContactSubmission, offline-authored `20260610000000_init` migration, prisma.config.ts (loads .env.local), lazy env-guarded client (`lib/prisma.ts`), `pnpm db:deploy`/`db:status` ready for when env arrives.
 - **In progress:** —
-- **Next step:** Supabase auth — `lib/supabase/*`, middleware gating `/studio`, `/login` magic-link page, `/auth/callback`, `/setup` page for missing env, `ensureProfile`.
+- **Next step:** Config CRUD + publish: `lib/portfolio.ts` (starter config, create-with-draft), `lib/publish.ts` (pointer logic, DI + unit tests), API routes (`/api/portfolios`, `/api/portfolios/[id]/draft` PATCH autosave, `/api/portfolios/[id]/publish`, `/api/contact`). Auth layer is done (middleware gates /studio → /login or /setup when env missing; magic-link login; callback handles both code and token_hash flows).
 - **Waiting on owner:** Supabase env vars (`apps/web/.env.local`, see §16). Everything must build/test without them; live-DB + auth verification is deferred until they arrive. Never commit secrets.
 
 ---
